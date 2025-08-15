@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Шероховатость</title>
+    <link href="css/main.css" rel="stylesheet" type="text/css">
+	<!--<link href="css/jstree/style.css" rel="stylesheet" type="text/css">-->
+	<style>
+	.main {
+	padding: 0 0 0 237px;
+	}
+	p{
+	margin-block-start: 5px; 
+	margin-block-end: 5px;
+	}
+	table {
+        border-collapse: collapse;
+        margin: auto;    
+    }
+    table th,
+    table td {
+        padding: 0 1px;
+    }
+    table.tab th,
+    table.tab td {
+        border: 1px solid #000;
+	}
+	td.data5 {
+	color:var(--color-primary); /*Blue;*/
+	font-weight: bold;
+    border: 1px solid black;
+	}
+	.clear {
+	border: none;
+	clear: both;
+	float: none;
+	font-size: 0;
+	height: 0;
+	line-height: 0;
+	}
+	</style>
+</head>
+<body>
+<div id="R_type" >
+    <input id="Ra" name="rtype" type="radio" value="Ra" checked title="среднеарифметическое отклонение от профиля"> Ra
+    <input id="Rz" name="rtype" type="radio" value="Rz" title="высота неровностей профиля по 10 точкам"> Rz
+	<input id="Rmax" name="rtype" type="radio" value="Rmax" title="наибольшая высота профиля"> Rmax
+	<input id="Sm" name="rtype" type="radio" value="Sm" title="средний шаг неровностей"> Sm
+	<input id="S" name="rtype" type="radio" value="S" title="средний шаг местных выступов профиля"> S
+	<!--<input id="tp" name="rtype" type="radio" value="tp" title="относитеотная опорная длина профиля"> tp-->
+</div >
+	<p>
+	<select id="R_Select" name="rselect" size="-1" >
+	</select> значение параметра
+	<p><input id="PrChk" type="checkbox" name="pr" value="pr" checked>только предпочтительные значения</p>
+	<p><select id="nSelectId" name="selectn" size="-1" >
+	<option></option>
+	<option>+10%</option>
+	<option>+20%</option>
+	<option>+40%</option>
+	<option>±10%</option>
+	<option>±20%</option>
+	<option>±40%</option>
+	<option>-10%</option>
+	<option>-20%</option>
+	<option>-40%</option>
+	</select> допуск
+	<p><select id="lSelectId" name="selectl" size="-1" >
+	<option></option>
+	<option>0.01</option>
+	<option>0.03</option>
+	<option>0.08</option>
+	<option>0.25</option>
+	<option>0.8</option>
+	<option>2.5</option>
+	<option>8</option>
+	<option>25</option>
+	</select> базовая длина
+	<!--<p><select id="t5SelectId" name="selectt" size="-1" >
+	</select> уровень сечения профиля % от Rmax
+	<p><select id="tpSelectId" name="selecttp" size="-1" >
+	</select> относительная опорная длина профиля, tp-->
+	<p><button id="TCopy" title="Копировать">Копировать</button>
+	
+	
+<div id="footer" class="formula">		
+</div>	
+<TABLE  class="tab">
+<TR><TH rowspan="2">Классы <br>шероховатости</TH><TH colspan="3">Параметры шероховатости, мкм</TH>	<TH rowspan="2">Базовая <br>длина l, мм</TH></TR>
+<TR><TH colspan="2">Ra</TH><TH>	Rz</TH></TR>
+<TR><TD align="center">	1</TD><TD align="center" class="data5"> 50 </TD><TD align="center">80</TD><TD align="center">320</TD><TD align="center" rowspan="3">8,0</TD></TR>
+<TR><TD align="center">	2	</TD><TD align="center" class="data5"> 25 </TD><TD align="center">	40	</TD><TD align="center">	160	</TD></TR>
+<TR><TD align="center">	3	</TD><TD align="center" class="data5"> 12,5 </TD><TD align="center">	20	</TD><TD align="center">	80	</TD></TR>
+<TR><TD align="center">	4	</TD><TD align="center" class="data5"> 6,3 </TD><TD align="center">	10	</TD><TD align="center">	40	</TD><TD align="center" rowspan="2">2,5</TD></TR>
+<TR><TD align="center">	5	</TD><TD align="center" class="data5"> 3,2 </TD><TD align="center">	5	</TD><TD align="center">	20	</TD></TR>
+<TR><TD align="center">	6	</TD><TD align="center" class="data5"> 1,6 </TD><TD align="center">	2,5	</TD><TD align="center">	10	</TD><TD align="center" rowspan="2">0,8</TD></TR>
+<TR><TD align="center">	7	</TD><TD align="center" class="data5"> 0,8 </TD><TD align="center">	1,25	</TD><TD align="center">	6,3	</TD></TR>
+<TR><TD align="center">	8	</TD><TD align="center" class="data5"> 0,4 </TD><TD align="center">	0,63	</TD><TD align="center">	3,2	</TD><TD align="center" rowspan="5">0,25</TD></TR>
+<TR><TD align="center">	9	</TD><TD align="center" class="data5"> 0,2</TD><TD align="center">	0,32	</TD><TD align="center">	1,6	</TD></TR>
+<TR><TD align="center">	10	</TD><TD align="center" class="data5"> 0,1</TD><TD align="center">	0,16	</TD><TD align="center">	0,8	</TD></TR>
+<TR><TD align="center">	11	</TD><TD align="center" class="data5"> 0,05 </TD><TD align="center">	0,08	</TD><TD align="center">	0,4	</TD></TR>
+<TR><TD align="center">	12	</TD><TD align="center" class="data5"> 0,025 </TD><TD align="center">	0,04	</TD><TD align="center">	0,2	</TD></TR>
+<TR><TD align="center">	13	</TD><TD align="center" class="data5"> 0,012 </TD><TD align="center">	0,02	</TD><TD align="center">	0,1	</TD><TD align="center" rowspan="2">0,08</TD></TR>
+<TR><TD align="center">14	</TD><TD align="center"> - </TD><TD align="center">0,01	</TD><TD align="center">0,05</TD></TR>
+<TR><TD align="center" class="data5" colspan="5">Предпочтительные параметры шероховатости по классам, мкм</TD></TR>
+</TABLE>
+	<script src="js/vendor/jquery.min.js" type="text/javascript"></script>
+    <script src="js/modules/roughness.js" type="text/javascript"></script>
+</body>
+</html>

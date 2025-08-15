@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>РИО</title>
+    <!--<link href="css/main.css" rel="stylesheet" type="text/css">-->
+	<!--<link href="css/jstree/style.css" rel="stylesheet" type="text/css">-->
+	<link href="css/tabulator_simple.min.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+		<div id="ToolTree" class="column TPtree" style="min-height: 400px;">
+            <img src="img/loading.gif" />
+        </div>
+        <div id="contents" class="column" >
+		<div>
+			<label>Поиск в дереве </label><input type='text' id='search_f' >
+		</div>
+		<div>
+			<select id="mySelectId" name="mySelect" size="5" onclick="Onclk_Select()" ondblclick="Dblclk_Select()" style="width: 400px;">
+			</select>
+		</div>
+		<img id="image"/ width="auto" height="auto" align="top" style="max-width:500px; max-height:400px;filter: invert(var(--invert-image));">
+		</div> 
+		<div id="group1">	
+			<table>
+			<tr>
+				<th>Производитель, ГОСТ</th>
+				<th class="th_hide">МРЧ</th>
+				<th class="th_hide">Покрытие</th>
+				<th class="th_hide">Хвостовик</th>
+				<th class="th_hide">P</th>
+				<th class="th_hide">M</th>
+				<th class="th_hide">K</th>
+				<th class="th_hide">N</th>
+				<th class="th_hide">S</th>
+				<th class="th_hide">H</th>
+				<th class="th_hide">Кол-во пластин</th>
+				<th class="th_hide">Кол-во кромок</th>
+				<th>Примечание</th>
+				<th>Сайт</th>
+			</tr>
+			<tr>
+				<td id="gost"></td>
+				<td id="cutmaterial" class="th_hide"></td>
+				<td id="coating" class="th_hide"></td>
+				<td id="shank" class="th_hide"></td>
+				<td id="Pt" class="th_hide"></td>
+				<td id="Mt" class="th_hide"></td>
+				<td id="Kt" class="th_hide"></td>
+				<td id="Nt" class="th_hide"></td>
+				<td id="St" class="th_hide"></td>
+				<td id="Ht" class="th_hide"></td>
+				<td id="z" class="th_hide"></td>
+				<td id="numeges" class="th_hide"></td>
+				<td id="note"></td>
+				<td id="URL"></td>
+			</tr>
+			</table>
+		</div>
+		<div id="knopki">
+            <button id="CallTurl"> URL 
+			<img src="data:image/png;base64,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" 
+			height="12"/></button>
+			<button id="SelectBut" onclick="SelectBut_change()" title='выбор без закрытия окна'>
+			<img src="img/icons8-bdexp.png" height="12"/></button>
+			<button id="SelBut" onclick="SelBut_change()" title='выбор и добавление нового инструмента'>
+			<img src="img/icons8-bdexp.png" height="12"/> ► 
+			<img src="img/icons8-плюс-32.png" height="12"/>T</button>
+			<button id="OkBut" onclick="OkBut_change()" title='выбор и возврат в основное окно'>
+			<img src="img/icons8-bdexp.png" height="12"/> ► <img src="img/icons8-закрыть-24.png" height="12"/></button>
+		</div>
+	<!--<style type="text/css">
+		BODY {
+			/*background: white; /* Цвет фона веб-страницы */
+		}
+		TABLE {	
+			/*position:absolute;*/
+			/*bottom: 20px;*/
+			border-collapse: collapse; /* Убираем двойные линии между ячейками */
+			border: 2px solid white; /* Прячем рамку вокруг таблицы */
+			/*background:#f5f5f5;*/
+		}
+		TD, TH {
+			padding: 3px; /* Поля вокруг содержимого таблицы */
+			border: 1px solid maroon; /* Параметры рамки */
+			text-align: left; /* Выравнивание по левому краю */
+		}
+	</style>-->
+		<div id="tblbegin" style="height:250px;overflow:auto;">
+			<!--<table>
+
+			</table>-->
+		</div> 
+		
+		<div id="footer">		
+		</div>	
+	<script src="js/vendor/jquery.min.js" type="text/javascript"></script>
+	<script src="js/vendor/jstree.min.js" type="text/javascript"></script>
+	<script src="js/vendor/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="js/vendor/tabulator.min.js" type="text/javascript"></script>
+    <script src="js/modules/RIO.js" type="text/javascript"></script>
+	<script src="js/vendor/datatables.min.js" type="text/javascript"></script>
+</body>
+</html>

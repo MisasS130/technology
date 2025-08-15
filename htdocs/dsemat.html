@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Материал</title>
+    <link href="css/main.css" rel="stylesheet" type="text/css">
+	<link href="css/jstree/style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<div class="container" >
+		<div id="DSEMatTree" class="column TPtree" style="min-height: 400px;">/* overflow:auto;*/
+			<img src="img/loading.gif" />
+		</div>
+		<div id="contents" class="column" style="min-height: 400px;">
+			<div>
+				<label>Поиск в дереве </label><input type='text' id='search_f' >
+				<button id="OkBut" onclick="OkBut_change()"> Ok </button>
+			</div>
+			<div>
+				<select id="mySelectId" name="mySelect" size="5" onclick="Onclk_Select()" ondblclick="Dblclk_Select()" style="width: 400px;">
+				</select>
+			</div>
+	</div>
+			<style type="text/css">
+			</style>
+		<div id="footer" >		
+		</div>	
+
+	<script src="js/vendor/jquery.min.js" type="text/javascript"></script>
+	<script src="js/vendor/jstree.min.js" type="text/javascript"></script>
+    <script src="js/modules/dsemat.js" type="text/javascript"></script>
+</body>
+</html>
