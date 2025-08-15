@@ -1,0 +1,255 @@
+body {
+    /*font-family: Ubuntu;*/
+	font-family: Arial, Verdana, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+}
+.container {
+    /*background: #FFD700;*/
+    /*display: flex;*/
+	flex-direction: column;
+	height: 100%;
+    text-align: left;
+    position: relative;
+    max-width: 960px;
+    margin: 0 auto;
+	/*overflow: scroll;*/
+}
+.column {
+    display: inline-block;
+    vertical-align: top; 
+	/*flex: 1 0 auto;*/	
+}
+
+.TPtree {
+	/*background: rgb(245,245,245) linear-gradient(#f4f4f4, #f1f1f1);*/
+    width: 38%;
+	min-width: 290px;
+	min-height: calc(100vh - 90px);
+	max-height: 500px;
+	overflow: scroll;
+}
+.header {
+     /*background: #F5DEB3;*/
+     width: 100%;
+     height: 20px;
+}
+.navigation {
+     /*background: #FE9798;*/
+     width: 100%;
+     height: 20px;
+}
+.contents {
+     /*background: #DCDCDC;*/
+     float: right;
+     width: 62%;
+	 /*flex: 1 0 auto;*/
+     /*height: 280px;*/
+}
+.clear {
+     clear: both;
+}
+.footer {
+    /*background: #00BFFF;*/
+	width: 100%;
+	height: 40px;
+	/*flex: 0 0 auto;*/
+}
+
+a.button15 {
+  display: inline-block;
+  font-family: arial,sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  color: rgb(68,68,68);
+  text-decoration: none;
+  /*user-select: none;*/
+  padding: .2em 1.2em;
+  outline: none;
+  border: 1px solid rgba(0,0,0,.1);
+  border-radius: 2px;
+  background: rgb(245,245,245) linear-gradient(#f4f4f4, #f1f1f1);
+  transition: all .218s ease 0s;
+}
+a.button15:hover {
+  color: rgb(24,24,24);
+  border: 1px solid rgb(198,198,198);
+  background: #f7f7f7 linear-gradient(#f7f7f7, #f1f1f1);
+  box-shadow: 0 1px 2px rgba(0,0,0,.1);
+}
+a.button15:active {
+  color: rgb(51,51,51);
+  border: 1px solid rgb(204,204,204);
+  background: rgb(238,238,238) linear-gradient(rgb(238,238,238), rgb(224,224,224));
+  box-shadow: 0 1px 2px rgba(0,0,0,.1) inset;
+}
+
+a.button21 {
+  display: inline-block;
+  width: 5em;
+  height: 2em;
+  line-height: 2em;
+  vertical-align: middle;
+  text-align: center;
+  text-decoration: none;
+  //user-select: none;
+  color: rgb(0,0,0);
+  outline: none;
+  border: 1px solid rgba(0,0,0,.4);
+  border-top-color: rgba(0,0,0,.3);
+  border-radius: 2px;
+  background: linear-gradient(rgb(255,255,255), rgb(240,240,240));
+  box-shadow:
+   0 0 3px rgba(0,0,0,0) inset,
+   0 1px 1px 1px rgba(255,255,255,.2),
+   0 -1px 1px 1px rgba(0,0,0,0);
+  transition: .2s ease-in-out;
+}
+a.button21:hover:not(:active) {
+  box-shadow:
+   0 0 3px rgba(0,0,0,0) inset,
+   0 1px 1px 1px rgba(0,255,255,.5),
+   0 -1px 1px 1px rgba(0,255,255,.5);
+}
+a.button21:active {
+  background: linear-gradient(rgb(250,250,250), rgb(235,235,235));
+  box-shadow:
+   0 0 3px rgba(0,0,0,.5) inset,
+   0 1px 1px 1px rgba(255,255,255,.4),
+   0 -1px 1px 1px rgba(0,0,0,.1);
+}
+.tabs {
+      position: relative;   
+      min-height: 300px; /* This part sucks */
+      clear: both;
+      margin: 25px 0;
+    }
+    .tab {
+      float: left;
+    }
+    .tab label {
+      background: #eee; 
+      padding: 10px; 
+      border: 1px solid #ccc; 
+      margin-left: -1px; 
+      position: relative;
+      left: 1px; 
+    }
+    .tab [type=radio] {
+      display: none;   
+    }
+    .content {
+      position: absolute;
+      top: 28px;
+      left: 0;
+      background: white;
+      right: 0;
+      bottom: 0;
+      padding: 20px;
+      border: 1px solid #ccc; 
+	  min-width: 500px;
+	  min-height: 325px;
+	  overflow: scroll;/*hidden*/
+    }
+    .content > * {
+      opacity: 0;
+      
+      -webkit-transform: translate3d(0, 0, 0);
+    
+      -webkit-transform: translateX(-100%);
+      -moz-transform:    translateX(-100%);
+      -ms-transform:     translateX(-100%);
+      -o-transform:      translateX(-100%);
+      
+      -webkit-transition: all 0.6s ease;
+      -moz-transition:    all 0.6s ease;
+      -ms-transition:     all 0.6s ease;
+      -o-transition:      all 0.6s ease;
+    }	
+    [type=radio]:checked ~ label {
+      background: white;
+      border-bottom: 1px solid white;
+      z-index: 2;
+    }
+    [type=radio]:checked ~ label ~ .content {
+      z-index: 1;
+    }
+	[type=radio]:checked ~ label ~ .content > * {
+      opacity: 1;
+      
+      -webkit-transform: translateX(0);
+      -moz-transform:    translateX(0);
+      -ms-transform:     translateX(0);
+      -o-transform:      translateX(0);
+    }
+.grid{
+	display: grid;
+	grid-template-columns: 1fr 50px 1fr 50 px;
+	grid-template-rows: auto;
+	grid-gap: 20px;
+}
+/*#img-preview{
+    max-widthwidth: 297px;
+    max-heightheight: 210px;
+}*/
+#uploadImagesList {
+		list-style: none;
+        padding: 0;
+}
+#uploadImagesList .item {
+        float: left;
+        margin-right: 20px;
+        margin-bottom: 20px;
+		max-width: 297px;
+}
+#uploadImagesList .item .img-wrap {
+		max-width: 297px;
+        width: inherit;
+		/*display: block;*/
+}
+#uploadImagesList .item .img-wrap img{
+		max-width: 297px;
+        width: inherit;
+        height: auto;
+}
+#uploadImagesList .item .delete-link {
+        cursor: pointer;
+        display: block;
+}
+/*.clear {
+        clear: both;
+}*/
+.information_json, .information_json * {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	/*display: grid;
+	grid-template-columns: 30px 30px 30px;*/
+}
+.table {
+	width: 100%;
+	max-width: 100%;
+	margin-bottom: 20px;
+	background-color: transparent;
+	border-spacing: 0;
+	border-collapse: collapse;
+}
+.pull-right {float: left;}
+/*.form-control {
+	display: block;
+	width: 100%;
+	height: 34px;
+	padding: 6px 12px;
+	font-size: 14px;
+	line-height: 1.42857143;
+	color: #555;
+	background-color: #fff;
+	background-image: none;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	-webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+	-o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}*/
