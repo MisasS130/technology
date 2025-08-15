@@ -1,0 +1,885 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Редактор техпроцессов</title>
+    <!--link href='https://fonts.googleapis.com/css?family=Ubuntu:400&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'-->
+    <!--<link href="css/jstree/style.css" rel="stylesheet" type="text/css">-->
+    <link href="css/main.css" rel="stylesheet" type="text/css">
+	<link href="css/jquery-ui-1.9.2.custom.min.css" rel="stylesheet" type="text/css">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+</head>
+<body>
+	
+    <div class="container">	
+	<section id="dialog" style="z-index:3;position:relative;float:none;"><img style="width:736px; height:auto;opacity: 1;filter: invert(var(--invert-image));" id="popupimg" /></section>  
+	<!--<style type="text/css">
+		#dialog {
+			border:2px dashed red;
+			right:10px;
+			border-radius:15px;
+			background: white;
+			z-index:2000;
+		}
+	</style>-->
+		<div id="header" style="color: gray">
+			Приложение для создания технологической документации. V1.3b (2023)&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<a href="mailto: evgeny.razzhivin@gmail.com?subject=TPMaker">E-mail</a>
+		</div>
+		<div id="navigation">
+			<a href="#" id="Homebut" title="Домой" class="button15" <!--onclick="Home_Button()" float: left; width: 135px;--><img src="img/icons8-собачья-будка-32.png" height="16"/></a>
+			<a href="#" title="Операция" class="button15" onclick="A_inc()"><img src="img/icons8-плюс-32.png" height="16"/>A</a> 
+			<a href="#" title="Переход" class="button15" onclick="O_inc()"><img src="img/icons8-плюс-32.png" height="16"/>O</a> 
+			<a href="#" title="Инструмент" class="button15" onclick="T_inc()"><img src="img/icons8-плюс-32.png" height="16"/>T</a> 
+			
+			<a id="Renum" title="Ренумеровать" class="button15"><img src="img/icons8-нумерованный-список-32.png" height="16"/></a>
+			<a href="#" title="Удалить" class="button15" onclick="Node_del()"><img src="img/icons8-мусор-32.png" height="16"/></a> 
+			<a id="Copy" title="Копировать" class="Copy" ><img src="img/icons8-скопировать-24.png" height="16"/></a> 
+			<a id="Cut" title="Вырезать" class="Cut" ><img src="img/icons8-вырезать-24.png" height="16"/></a> 
+			<a id="Paste" title="Вставить" class="button15" ><img src="img/icons8-вставить-24.png" height="16"/></a> 
+			
+			&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+			
+			<a id="Help" href="#" title="Помощь. Не работает приложение? Очисти кэш браузера!" class="button15"><img src="img/help.png" height="16"/></a> 
+			<a id="newTP" href="#" title="Новый" class="button15"><img src="img/icons8-файл-32.png" height="16"/></a> 
+			<a id="tpexp" href="#" title="Экспорт" class="button15" onclick="TPexp_click()" style="display: none" ><img src="img/icons8-bdimp.png" height="16"/></a>
+			<a id="tpinp" href="#" title="Импорт" class="button15" style="display: none"><img src="img/icons8-bdexp.png" height="16"/></a>
+			<a id="export" href="#" title="Сохранить" class="button15" download="tp.json"><img src="img/icons8-сохранить-32.png" height="16"/></a>
+			
+			<!--<a id="import" href="#" class="button15" onclick="Load_txt()"><img src="img/icons8-открыть-папку-32.png" height="16"/></a> -->
+			<input type="file" id="import" accept=".txt,.json" title="Загрузить" >
+			
+		</div>
+		<!--<img id="popup" class="popupimg" style="display:none" src="img/loading.gif" />-->
+		
+          <div id="TPtree" class="column TPtree">
+            <img src="img/loading.gif" />			
+          </div>
+          <div id="contents" class="column"> 
+			<div id="Home_tab" class="tabs">
+				<div class="tab">
+					<input type="radio" id="tab01" name="tab-group1" checked>
+					<label for="tab01" ><img src="img/info.png" height="12" style="filter: invert(var(--invert-image));"/> Техпроцесс</label> 
+					<section class="content" >
+						<div style="float: left; width: 33%;">Обозначение изделия</div><div style="float: right; width: 67%;"><input id="Product" type="text" size=40   onchange="Product_change()"></div><div class="clear">
+						<div style="float: left; width: 33%;">Обозначение ТД</div><div style="float: right; width: 67%;"><input id="Docum" type="text" size=40 value='Новый техпроцесс' onchange="Docum_change()"></div><div class="clear">
+						<table width="100%" cellspacing="0" cellpadding="1">
+						<tr>
+							<td align="left">Вариант ТП</td><td ><input type="number" min="1" max="999" value="1" id="TPVar" onchange="TPVar_change()"></td>
+						</tr>
+						<tr>
+							<td>Разработал</td><td><input type="text" size=16 id="Performer" onchange="Performer_change()"></td>
+						<td>Дата</td>
+						<td><input id="TPDate" type=datetime-local value="" style="width: 150px;" onchange="Date_change()"></td>
+						</tr>		
+						<tr>
+							<td>Проверил</td><td><input type="text" size=16 id="Checking" onchange="Checking_change()"></td>
+						<td>Литера 1</td>
+						<td><select id="Letter1" style="width: 150px;" onchange="Letter1_change()">
+							<option value="" selected></option>
+							<option value="П">Техническое предложение</option>
+							<option value="О">Опытный образец</option>
+							<option value="О1">Опытный образец 1</option>
+							<option value="О2">Опытный образец 2</option>
+							<option value="А">Установочная серия</option>
+							<option value="Б">Контрольная серия</option>
+							<option value="Д">Производство</option>
+							<option value="И">Разовое изготовление</option>
+							<option value="РО">Опытный ремонт</option>
+							<option value="РО1">Опытный ремонт 1</option>
+							<option value="РО2">Опытный ремонт 2</option>
+							<option value="РА">Серийный ремонт А</option>
+							<option value="РБ">Серийный ремонт Б</option>
+							<option value="РД">Директивный ремонт</option>
+							<option value="РИ">Разовый ремонт</option>
+							</select>
+						</td>	
+						</tr>
+						<tr>
+							<td>Утвердил</td><td><input type="text" size=16 id="Approving" onchange="Approving_change()"></td>
+						<td>Литера 2</td>
+						<td><select id="Letter2" style="width: 150px;" onchange="Letter2_change()">
+							<option value="" selected></option>
+							<option value="П">Техническое предложение</option>
+							<option value="О">Опытный образец</option>
+							<option value="О1">Опытный образец 1</option>
+							<option value="О2">Опытный образец 2</option>
+							<option value="А">Установочная серия</option>
+							<option value="Б">Контрольная серия</option>
+							<option value="Д">Производство</option>
+							<option value="И">Разовое изготовление</option>
+							<option value="РО">Опытный ремонт</option>
+							<option value="РО1">Опытный ремонт 1</option>
+							<option value="РО2">Опытный ремонт 2</option>
+							<option value="РА">Серийный ремонт А</option>
+							<option value="РБ">Серийный ремонт Б</option>
+							<option value="РД">Директивный ремонт</option>
+							<option value="РИ">Разовый ремонт</option>
+							</select>
+						</td>
+						</tr>
+						<tr>
+							<td>Н.контроль</td><td><input type="text" size=16 id="Normcontrol" onchange="Normcontrol_change()"></td>
+							<td>Литера 3</td>
+							<td><select id="Letter3" style="width: 150px;" onchange="Letter3_change()">
+							<option value="" selected></option>
+							<option value="П">Техническое предложение</option>
+							<option value="О">Опытный образец</option>
+							<option value="О1">Опытный образец 1</option>
+							<option value="О2">Опытный образец 2</option>
+							<option value="А">Установочная серия</option>
+							<option value="Б">Контрольная серия</option>
+							<option value="Д">Производство</option>
+							<option value="И">Разовое изготовление</option>
+							<option value="РО">Опытный ремонт</option>
+							<option value="РО1">Опытный ремонт 1</option>
+							<option value="РО2">Опытный ремонт 2</option>
+							<option value="РА">Серийный ремонт А</option>
+							<option value="РБ">Серийный ремонт Б</option>
+							<option value="РД">Директивный ремонт</option>
+							<option value="РИ">Разовый ремонт</option>
+							</select>
+						</td>
+						</tr>
+						</table>
+						<br>
+						<div style="float: left; width: 33%;">Обозначение ДСЕ</div><div style="float: right; width: 67%;"><input type="text" size=30 id="Designation" onchange="Designation_change()"></div><div class="clear">
+						<div style="float: left; width: 33%;">Наименование ДСЕ</div><div style="float: right; width: 67%;"><input type="text" size=30 id="DSEName" onchange="DSEName_change()"></div><div class="clear">
+						<button style="float: left; width: 33%;text-align: left;" id="DSEMatbut" onclick="DSEMat_dbl()">Материал ДСЕ</button><div style="float: right; width: 67%;"><input type="text" size=30 id="DSEMat" onchange="DSEMat_change()" ondblclick="DSEMat_dbl()" style="background-color:var(--color-c2) "></div><div class="clear">
+						<div style="float: left; width: 33%;">Годовая программа</div><div style="float: right; width: 67%;"><input type="number" id="AnProgram" onchange="AnProgram_change()"></div><div class="clear">
+						<div style="float: left; width: 20%;">Примечание</div><div style="float: right; width: 80%;"><textarea rows="2" cols="47" id="ProcessNote" onchange="ProcessNote_change()"></textarea></div>
+					</section>
+				</div> 
+				<div class="tab">
+					<input type="radio" id="tab02" name="tab-group1">
+					<label for="tab02" ><img src="img/icons8-стальная-балка-50.png" height="12"style="filter: invert(var(--invert-image));"/> Заготовка</label> 
+					<section class="content">
+					<tr>
+					<td align="left" width="12"><button id="M1but" onclick="M1_dbl()" title="Выбор сортамента из базы">M01</button > </td>
+					<td>
+						<input type="text" id="M01_1" name="other" list="sortament" style=";width: 120px;"/ autocomplete="on" title="Наименование сортамента">
+						<datalist id="sortament" >
+							<option value="Круг">
+							<option value="Пруток">
+							<option value="Труба">
+							<option value="Квадрат">
+							<option value="Шестигранник">
+							<option value="Лист">
+							<option value="Лента">
+							<option value="Плита">
+							<option value="Полоса">
+							<option value="Уголок">
+							<option value="Двутавр">
+							<option value="Рельс">
+							<option value="Швеллер">
+							<option value="Проволока">
+						</datalist>
+						
+					</td>
+					<input  id="M01_2" style="position: absolute;width: 300px;top: 0.7em;" title="Наименование, сортамент, размер и марка материала, обозначение стандарта, технических условий. Запись выполняется на уровне одной строки с применением разделительного знака дроби &quot;/&quot;, например, лист БОН-2,5х1000х2500 ГОСТ 19903-74 / III-IV В ст.3 ГОСТ 14637-89">
+					<input type="text" id="M01_3" maxlength="100" size="10" float="center" title="Марка материала" style="position: absolute; width: 300px;top: 2.3em;">
+					<br>
+					</br>
+					
+					</tr>
+					<table width="100%" cellspacing="0" cellpadding="1">
+					<tr> 
+					<td align="left" width="10"></td>
+					<td align="center" width="10">Код</td>
+					<td align="center" width="10">ЕВ</td>
+					<td align="center" width="10">МД</td>
+					<td align="center" width="10">ЕН</td>
+					<td align="center" width="10">Н.расх.</td>
+					<td align="center" width="10">КИМ</td>
+					</tr>
+					<tr> 
+					<td align="left">M02</td>
+					<td><input type="text" id="MatCode" maxlength="15" size="10" onchange="MatCode_change()" title="Код материала по классификатору"></td>
+					<td><select id="UnitCode" maxlength="5" onchange="UnitCode_change()" title="Код единицы величины (массы, длины, площади и т.п.) детали, заготовки, материала по Классификатору СОЕВС. Допускается указывать единицы измерения величины." >
+							<option value=""></option>
+							<option value="г">г</option>
+							<option value="кг" selected>кг</option>
+							<option value="т">т</option>
+							<!--<input type="text" name="ev" maxlength="5" size="3"></td>-->
+						</select></td>
+					<td><input type="number" id="Mass" maxlength="5" size="6" style="width: 80px" onchange="Mass_change()" title="Масса детали по конструкторскому документу"></td>
+					<td><input type="number" id="StandartUnit" value="1" size="3" style="width: 70px" onchange="StandartUnit_change()" title="Единица нормирования, на которую установлена норма расхода материала или норма времени, например 1, 10, 100"></td>
+					<td><input type="number" id="MatRate" maxlength="5" size="6" style="width: 70px" onchange="MatRate_change()" title="Норма расхода материала"></td>
+					<td><input type="number" id="KIM" maxlength="5" size="6" style="width: 60px" onchange="KIM_change()" title="Коэффициент использования материала"></td>
+					</tr>					</table>
+					<table width="100%" cellspacing="0" cellpadding="1">
+					<tr>
+					<td align="left" width="10"></td>
+					<td align="center" width="30">Код заготовки</td>
+					<td width="1"></td>
+					<td align="center" width="30">Профиль и размеры</td>
+					<td align="center" width="6">КД</td>
+					<td align="center" width="10">МЗ</td>
+					<td align="center" width="12">Твердость</td>
+					</tr>
+					<tr> 
+					<td align="left">M03</td>
+					<td><input type="text" id="BlankCode" maxlength="10" size="10" onchange="BlankCode_change()" title="Код заготовки по классификатору. Допускается указывать вид заготовки (отливки, прокат, поковка и т.п.)"></td>
+					<td><button id="Diam">ø</button></td>
+					<td><input type="text" id="DSEDim" maxlength="40" size="15" onchange="DSEDim_change()" title="Профиль и размеры исходной заготовки. Информацию по размерам следует указывать исходя из имеющихся габаритов, например, лист 1,0x710х1420, 115х270х390 (для отливки). Допускается профиль не указывать."></td>
+					<td><input type="number" id="NumDet" style="width: 30px" maxlength="3" size="3" value="1" onchange="NumDet_change()" title="Количество деталей, изготавливаемых из одной заготовки"></td>
+					<td><input type="number" id="BlankMass" style="width: 50px" maxlength="6" size="3" onchange="BlankMass_change()" title="Масса заготовки"></td>
+					<td><input type="text" id="Hardness" maxlength="20" size="7" onchange="Hardness_change()" title=""></td>
+					</tr>
+					</table>
+					<table width="100%" cellspacing="0" cellpadding="1">
+					<tr>
+					<td align="left" width="10"></td>
+					<td align="center" width="18">Диаметр</td>
+					<td align="center" width="18">Длина</td>
+					<td align="center" width="18">Высота</td>
+					<td align="center" width="18">Ширина</td>
+					<td align="center" width="18">ISO513</td>
+					</tr>
+					<tr> 
+					<td align="left" width="10"></td>
+					<td><input type="number" id="DiamDSE" style="width: 100px" maxlength="20" size="10" onchange="DiamDSE_change()"></td>
+					<td><input type="number" id="LenDSE" style="width: 100px" maxlength="20" size="10" onchange="LenDSE_change()"></td>
+					<td><input type="number" id="HeightDSE" style="width: 100px" maxlength="20" size="10" onchange="HeightDSE_change()"></td>
+					<td><input type="number" id="WidthDSE" style="width: 100px" maxlength="20" size="10" onchange="WidthDSE_change()"></td>
+					<td><select id="iso513"  onchange="iso513_change()" >
+						<option value=""></option>
+						<option value="P"  title="Стали">P</option>
+						<option value="M"  title="Нержавеющие стали">M</option>
+						<option value="K"  title="Чугуны">K</option>
+						<option value="N"  title="Цветные металлы">N</option>
+						<option value="S"  title="Жаропрочные сплавы и титан">S</option>
+						<option value="H"  title="Твердые материалы">H</option>
+					</select>
+					</td>
+					</tr>
+					</table>
+					</section>
+				</div>
+				<div class="tab" >
+					<input type="radio" id="tab03" name="tab-group1" >
+					<label for="tab03" ><img src="img/pngegg.png" height="12" style="filter: invert(var(--invert-image));"/> Чертеж</label> 
+					<section class="content" >
+						<button id="Left" title='предыдущий' class="button15"> ◄ </button>
+						<input id="M" type='text' size=1 value='0' title='лист' style="width: 15px;"> 
+						<a>из</a> 
+						<input id="N" type='text' size=1 value='0' title='листов' style="width: 15px;"> 
+						<button id="Right"  title='следующий' class="button15"> ► </button> 
+						<button  title="Удалить" onclick="Draw_del()"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAARFQTFRFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA////aOGfXgAAAFl0Uk5TAAFHufDtsTlLw/m+Sk7i+NtS5ONPqEZI4eX9oERJtVCfFRmq/pUPG6+uRbuptPNN+vLn6fu3uB38vLLgs4uCEALrBJOnGFGUmRyrtuqsurDePUy9v0Hv7jsLP0j8AAAAAWJLR0RaA7ulogAAAAlwSFlzAAAMUwAADFMBP1PxegAAAZFJREFUOMt9k/9fwUAYx59J0jLaTEYYSiRsK5GlQlRKSF+f//8f6XZmd77Ufvvc+313n3s9rwEACL4t/3ZgB7gvuCuKeyHBTVIYIxHcDzEuK85KVJ0nVcHYQTyAWtDjieRhKp1BRXd5NgeQP8Kwa+iJ48IJQLGECjkjHaacGvMzVIVyYpyiVoYzrOTmG11DWnBiZLAKNTG9uNoxQgbjAIZZA0v0ujnG+UWScZDrFlxio8kbVxxvttCG1DW2OePm9o7xNmopco/CG50OzxWDNlky1vkfBsedp68ZS3yDscKJ0cVsj8VeFrsSrAj3rD90CisCqdkf8AuDPp3kn5wYMc7YwOeG/g+nRuJhnffYWwYVTMgAZY3n+cenIQsVDPvIuNt5tukZMVBkho0vYJkqz0cj3jBMC2p1meOKRCoxQzX90MCGm/OvhNPSC6M4xgnENbSHHOeMoo3TNzpJx/C4ZxAenbmzbsnBqsepMdaNBkbdiZOf1xQxyo3P0NA0cTpzo+B7j5gfaYEJwufk67v046z8Ani9Uy5EHT/4AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE5LTA1LTAzVDA5OjI0OjQ5KzAxOjAwvCwbWAAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxOS0wNS0wM1QwOToyNDo0OSswMTowMM1xo+QAAABGdEVYdHNvZnR3YXJlAEltYWdlTWFnaWNrIDYuNy44LTkgMjAxOS0wMi0wMSBRMTYgaHR0cDovL3d3dy5pbWFnZW1hZ2ljay5vcmdBe+LIAAAAGHRFWHRUaHVtYjo6RG9jdW1lbnQ6OlBhZ2VzADGn/7svAAAAGHRFWHRUaHVtYjo6SW1hZ2U6OmhlaWdodAA1MTLA0FBRAAAAF3RFWHRUaHVtYjo6SW1hZ2U6OldpZHRoADUxMhx8A9wAAAAZdEVYdFRodW1iOjpNaW1ldHlwZQBpbWFnZS9wbmc/slZOAAAAF3RFWHRUaHVtYjo6TVRpbWUAMTU1Njg3MTg4OUlrIvQAAAATdEVYdFRodW1iOjpTaXplADEzLjVLQkIjJ0glAAAARnRFWHRUaHVtYjo6VVJJAGZpbGU6Ly8uL3VwbG9hZHMvNTYvVG1laG9hSi8xOTE5L2JpZ2NhbmNlbHN5bWJvbF8xMjE5NjQucG5nkRY+2AAAAABJRU5ErkJggg==" height="12" style="filter: invert(var(--invert-image));"/></button> 
+						<button id="NW"  title='открыть в новом окне'><img src="img/icons8-открыть-в-окне-32.png" height="12" style="filter: invert(var(--invert-image));"/></button>
+						<input type="file" id="imageLoader">
+						<img id="Drwimage" width="420"  align="top" style="background-color:var(--color-secondary);filter: invert(var(--invert-image));">
+						<canvas id="imageCanvas" width="1980" height="1020" style=" pointer-events: none;background-color:var(--color-secondary);filter: invert(var(--invert-image));"></canvas>
+						<!--<div class="clear"></div>-->
+					</section> 
+				</div>  
+				<div class="tab">
+					<input type="radio" id="tab04" name="tab-group1">
+					<label for="tab04" ><img src="img/icons8-настройки-32.png" height="12" style="filter: invert(var(--invert-image));"/> Настройки</label> 
+					<section class="content">
+					<!--<div style="float: left; width: 40%;">Рабочая папка</div><div style="float: right; width: 60%;"><input type="text" size=40 id="WorkFolder" onchange="WorkFolder_change()"></div><div class="clear">
+					<div style="float: left; width: 40%;">Папка с изображениями</div><div style="float: right; width: 60%;"><input type="text" size=40 id="ImgFolder" onchange="ImgFolder_change()"></div><div class="clear">-->
+					<div style="float: left; width: 40%;">Вышестоящая организация</div><div style="float: right; width: 60%;"><input type="text" size=39 id="Boss" onchange="Boss_change()"></div><div class="clear">
+					<div style="float: left; width: 40%;">Предприятие-разработчик</div><div style="float: right; width: 60%;"><input type="text" size=39 id="MyFirm" onchange="MyFirm_change()"></div><div class="clear">
+					<div style="float: left; width: 40%;">Номер первой операции</div><div style="float: right; width: 60%;"><input type="number" size=39 value="10" id="AFirst" onchange="AFirst_change()"></div><div class="clear" >
+					<div style="float: left; width: 40%;">Шаг номеров операций</div><div style="float: right; width: 60%;"><input type="number" size=39 value="10" id="AStep" onchange="AStep_change()"></div><div class="clear">
+					<div>Эмблема предприятия
+					<button  title="Удалить" onclick="Razrab_del()"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAARFQTFRFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA////aOGfXgAAAFl0Uk5TAAFHufDtsTlLw/m+Sk7i+NtS5ONPqEZI4eX9oERJtVCfFRmq/pUPG6+uRbuptPNN+vLn6fu3uB38vLLgs4uCEALrBJOnGFGUmRyrtuqsurDePUy9v0Hv7jsLP0j8AAAAAWJLR0RaA7ulogAAAAlwSFlzAAAMUwAADFMBP1PxegAAAZFJREFUOMt9k/9fwUAYx59J0jLaTEYYSiRsK5GlQlRKSF+f//8f6XZmd77Ufvvc+313n3s9rwEACL4t/3ZgB7gvuCuKeyHBTVIYIxHcDzEuK85KVJ0nVcHYQTyAWtDjieRhKp1BRXd5NgeQP8Kwa+iJ48IJQLGECjkjHaacGvMzVIVyYpyiVoYzrOTmG11DWnBiZLAKNTG9uNoxQgbjAIZZA0v0ujnG+UWScZDrFlxio8kbVxxvttCG1DW2OePm9o7xNmopco/CG50OzxWDNlky1vkfBsedp68ZS3yDscKJ0cVsj8VeFrsSrAj3rD90CisCqdkf8AuDPp3kn5wYMc7YwOeG/g+nRuJhnffYWwYVTMgAZY3n+cenIQsVDPvIuNt5tukZMVBkho0vYJkqz0cj3jBMC2p1meOKRCoxQzX90MCGm/OvhNPSC6M4xgnENbSHHOeMoo3TNzpJx/C4ZxAenbmzbsnBqsepMdaNBkbdiZOf1xQxyo3P0NA0cTpzo+B7j5gfaYEJwufk67v046z8Ani9Uy5EHT/4AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE5LTA1LTAzVDA5OjI0OjQ5KzAxOjAwvCwbWAAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxOS0wNS0wM1QwOToyNDo0OSswMTowMM1xo+QAAABGdEVYdHNvZnR3YXJlAEltYWdlTWFnaWNrIDYuNy44LTkgMjAxOS0wMi0wMSBRMTYgaHR0cDovL3d3dy5pbWFnZW1hZ2ljay5vcmdBe+LIAAAAGHRFWHRUaHVtYjo6RG9jdW1lbnQ6OlBhZ2VzADGn/7svAAAAGHRFWHRUaHVtYjo6SW1hZ2U6OmhlaWdodAA1MTLA0FBRAAAAF3RFWHRUaHVtYjo6SW1hZ2U6OldpZHRoADUxMhx8A9wAAAAZdEVYdFRodW1iOjpNaW1ldHlwZQBpbWFnZS9wbmc/slZOAAAAF3RFWHRUaHVtYjo6TVRpbWUAMTU1Njg3MTg4OUlrIvQAAAATdEVYdFRodW1iOjpTaXplADEzLjVLQkIjJ0glAAAARnRFWHRUaHVtYjo6VVJJAGZpbGU6Ly8uL3VwbG9hZHMvNTYvVG1laG9hSi8xOTE5L2JpZ2NhbmNlbHN5bWJvbF8xMjE5NjQucG5nkRY+2AAAAABJRU5ErkJggg==" height="12" style="filter: invert(var(--invert-image));"/></button> 
+					<input type="file" id="RimageLoader">
+					<!--<img id="Razrab" align="top" style="width:333px;height:102px;background-color:#ffffff;border: 1px solid #00a8e1" src="img/Производственные решения2.png" alt="41,6x12,75">-->
+					<canvas id="RCanvas" width="333" height="102" title='333x102' style="filter: invert(var(--invert-image));border: 1px solid #000000"></canvas>
+					</div>
+					<div><input type="checkbox" name="MKs" value="false" id="chmks" >Пробел в МК
+					<input type="checkbox" name="OKs" value="false" id="choks" >Пробел в ОК
+					<input type="checkbox" name="OKPs" value="true" id="chokp" checked >Режимы в ОК
+					<input type="checkbox" name="ThemeColor" value="true" id="slider" checked onchange="toggleTheme()">Светлая тема
+					<!--<input type="checkbox" name="LV" value="false" id="chver" >Ст.версия !-->
+					</div>
+					Шрифт
+					<select id="TPFont" style="width: 200px;"  >
+						<option value="GOST_Ai">ГОСТ 2.304-81 A</option>
+						<option value="Ariali">Arial</option>
+					</select>
+					<!--
+					<table>
+					<tr>
+					<td>Шрифт</td><td>
+					<select id="TPFont" style="width: 200px;"  >
+						<option value="GOST_Ai">ГОСТ 2.304-81 A</option>
+						<option value="Ariali">Arial</option>
+					</select></td>
+					</tr>
+					<tr>
+					<td>ТЛ</td><td>
+					<select id="TLstyle" style="width: 200px;"  >
+						<option value="0">ГОСТ 3.1105-2011 Форма 2</option>
+					</select>
+					</td>
+					</tr>
+					<tr>
+					<td> МК 1л</td><td>
+					<select id="MK1style" style="width: 200px;"  >
+						<option value="0">ГОСТ 3.1118-82 Форма 1</option>
+					</select>
+					</td>
+					</tr>
+					<tr>
+					<td>МК 2л</td><td>
+					<select id="MK2style" style="width: 200px;" >
+						<option value="0">ГОСТ 3.1118-82 форма 1б</option>
+					</select>
+					</td>
+					</tr>
+					<tr>
+					<td>ОК 1л</td><td>
+					<select id="OK1style" style="width: 200px;"  >
+						<option value="0">ГОСТ 3.1404-86 Форма 3</option>
+					</select>
+					</td>
+					</tr>
+					<tr>
+					<td>ОК 2л</td><td>
+					<select id="OK2style"  style="width: 200px;" >
+						<option value="0">ГОСТ 3.1404-86 Форма 2а</option>
+					</select>
+					</td>
+					</tr>
+					<tr>
+					<td>КЭ 1л</td><td>
+					<select id="KE1style" style="width: 200px;"  >
+						<option value="0">ГОСТ 3.1105-84 Форма 7</option>
+					</select>
+					</td>
+					</tr>
+					<tr>
+					<td>КЭ 2л</td><td>
+					<select id="KE2style"  style="width: 200px;" >
+						<option value="0">ГОСТ 3.1105-84 Форма 7а</option>
+					</select>
+					</td>
+					</tr>
+					<tr>
+					<td>КК 1л</td><td>
+					<select id="KK1style" style="width: 200px;"  >
+						<option value="0">ГОСТ 3.1505-85 Форма 2</option>
+					</select>
+					</td>
+					</tr>
+					<tr>
+					<td>КК 2л</td><td>
+					<select id="KK2style"  style="width: 200px;" >
+						<option value="0">ГОСТ 3.1502-85 Форма 2а</option>
+					</select>
+					</td>
+					</tr>
+					<tr>
+					<td>ВО 1л</td><td>
+					<select id="VO1style" style="width: 200px;" >
+						<option value="0">ГОСТ 3.1122-84 Форма 3</option>
+					</select>
+					</td>
+					</tr>
+					<tr>
+					<td>ВО 2л</td><td>
+					<select id="VO2style"  style="width: 200px;" >
+						<option value="0">ГОСТ 3.1122-84 Форма 3а</option>
+					</select>
+					</td>
+					</tr>					
+					</table>!-->
+					</section> 
+				</div>
+				<div class="tab">
+					<input type="radio" id="tab05" name="tab-group1">
+					<label for="tab05" ><img src="img/icons8-документы-48.png" height="12" style="filter: invert(var(--invert-image));"/> Комплект ТД</label> 
+					<section class="content">
+					<form id="f1" action="php/PrintMK1.php" target="_blank">
+						<input type="button" id="ComplDoc" class="button15" value="Сформировать комплект документации">  <!--onclick="ComplDoc_click()" -->
+					</form>
+					<!--type="submit"--!>
+					<!--<p><input type="checkbox" name="TLc" value="true" checked> ТЛ</p>
+					<p><input type="checkbox" name="MKc" value="true" checked> МК</p>
+					<p><input type="checkbox" name="OKc" value="true" checked> ОК</p>
+					<p><input type="checkbox" name="KEc" value="true" checked> КЭ</p>
+					<p><input type="checkbox" name="KKc" value="true" checked> ОКК</p>
+					<p><input type="checkbox" name="VOc" value="true" checked> ВО</p>-->
+					<table class="table" name="tbltile" >
+						<tr class="information_json">
+							<th title="Номер операции">№оп.</th>
+							<th title="Титульный лист" ><input type="checkbox" name="TLc" value="true" id="ch1" checked>ТЛ</th>
+							<th title="Маршрутная карта"><input type="checkbox" name="MKc" value="true" id="ch2" checked>МК</th>
+							<th title="Операционная карта"><input type="checkbox" name="OKc" value="true" id="ch3" >ОК</th>
+							<th title="Карта эскизов"><input type="checkbox" name="KEc" value="true" id="ch4" >КЭ</th>
+							<th title="Операционная карта контроля"><input type="checkbox" name="KKc" value="true" id="ch5" >ОКК</th>
+							<th title="Карта наладки"><input type="checkbox" name="KNc" value="true" id="ch7" >КН</th>
+							<th title="Ведомость оснастки"><input type="checkbox" name="VOc" value="true" id="ch6" checked>ВО</th>
+							<th></th>
+						</tr>
+					</table>
+					<table id="tblprn" name="tblprnt" class="table">			
+							<tr id="chkbxtbl" class="information_json">
+							<td></td>
+							</tr>
+					</table>
+					</section> 
+				</div> 				
+			</div> 
+			<div id="A_tab" class="tabs">
+				<div class="tab">
+					<input type="radio" id="tabA1" name="tab-group2" checked>
+					<label for="tabA1" ><img src="img/info.png" height="12" style="filter: invert(var(--invert-image));"/> Операция</label> 
+					<section class="content">
+						<div style="float: left; width: 130px;">Номер операции</div>
+						<div style="float: left; width: 180px;"><input type="number" id="NOPtxt" size=20 onchange="NOP_change()" title="Номер операции (процесса) в технологической последовательности изготовления или ремонта изделия (включая контроль и перемещение)"></div>
+						<div style="float: left; width: 115px;">Номер цеха</div>
+						<div style="float: left; width: 40px;"><input type="text" id="ShopNum" size=6 onchange="ShopNum_change()" title="Номер (код) цеха, в котором выполняется операция"></div>
+						<div class="clear">
+						<div style="float: left; width: 130px;">Код операции</div>
+						<div style="float: left; width: 180px;"><input type="text" id="OPCode" size=20 onchange="OPCode_change()"  title="Код операции по технологическому классификатору, наименование операции.Примечание. Допускается код операции не указывать."></div>
+						<div style="float: left; width: 115px;">Номер участка</div>
+						<div style="float: left; width: 40px;"><input type="text" id="UchNum" onchange="UchNum_change()" size=6 title="Номер (код) участка, конвейера, поточной линии и т.п."></div>
+						<div class="clear">
+						<button style="float: left; width: 130px;text-align: left;" id="OPNamebut" onclick="OPName_dbl()">Операция</button>
+						<div style="float: left; width: 180px;"><input type="text" id="OPName" onchange="OPName_change()" ondblclick="OPName_dbl()" size=20 style="background-color: var(--color-c2)"  title="Код операции по технологическому классификатору, наименование операции."></div>
+						<div style="float: left; width: 115px;">Рабочее место</div>
+						<div style="float: left; width: 40px;"><input type="text" id="RM" onchange="RM_change()" size=6 title="Номер (код) рабочего места"></div>
+						<div class="clear">
+						<div style="float: left; width: 130px;">Документация</div>
+						<div style="float: left; width: 300px;"><input type="text" id="ADoc" onchange="ADoc_change()" size=47 title="Обозначение документов, применяемых при выполнении данной операции. Состав документов следует указывать через разделительный знак &quot;;&quot; с возможностью, при необходимости, переноса информации на последующие строки"></div>
+						<div class="clear">
+						<div style="float: left; width: 130px;">ИОТ</div>
+						<div style="float: left; width: 180px;"><input type="text" id="IOT" onchange="IOT_change()" size=20 title="Обозначение инструкций по охране труда, применяемых при выполнении данной операции. Состав документов следует указывать через разделительный знак &quot;;&quot; с возможностью, при необходимости, переноса информации на последующие строки"></div>
+						<div style="float: left; width: 115px;">КОИД</div>
+						<div style="float: left; width: 40px;"><input type="number" id="KOID" style="width: 69px" onchange="KOID_change()" size=6 title=" Количество одновременно изготавливаемых (обрабатываемых, ремонтируемых) деталей (сборочных единиц) при выполнении одной операции Примечание. При выполнении процесса перемещения следует указывать объем грузовой единицы - количество деталей в таре"></div>
+						<div class="clear">
+						<div style="float: left; width: 130px;">СОЖ</div>
+						<div style="float: left; width: 180px;"><input type="text" id="Coolant" onchange="Coolant_change()" ondblclick="Cool_dbl()" size=20 title="Информация по применяемой смазочно-охлаждающей жидкости"></div>
+						<div style="float: left; width: 115px;">УП</div>
+						<div style="float: left; width: 40px;"><input type="text" id="UP" onchange="UP_change()" size=6 title="Обозначение программы в соответствии с требованиями отраслевых НТД. Графу следует заполнять для операций на станках с ЧПУ"></div>
+						<div class="clear">
+						<div style="float: left; width: 20%;">Примечание</div><div style="float: right; width: 80%;"><textarea rows="2" cols="51" id="OPNote" onchange="OPNote_change()"></textarea></div>
+					</section>
+				</div> 
+				<div class="tab">
+					<input type="radio" id="tabA2" name="tab-group2">
+					<label for="tabA2" ><img src="img/laser.png" height="12" style="filter: invert(var(--invert-image));"/> Станок</label> 
+					<section class="content">
+					<div style="float: left; width: 40%;">Изготовитель станка</div><div style="float: right; width: 60%;"><input type="text" size=39 id="EqFirm" onchange="EqFirm_change()"></div><div class="clear">
+					<div style="float: left; width: 40%;">Наименование станка</div><div style="float: right; width: 60%;"><input type="text" size=39 id="EqName" onchange="EqName_change()"></div><div class="clear">
+					<div style="float: left; width: 40%;">Модель станка</div><div style="float: right; width: 60%;"><input type="text" size=39 id="EqModel" onchange="EqModel_change()"></div><div class="clear">
+					<div style="float: left; width: 40%;">Устройство ЧПУ</div><div style="float: right; width: 60%;"><input type="text" size=39 id="EqCNC" onchange="EqCNC_change()"></div><div class="clear">
+					<div style="float: left; width: 40%;">Инвентарный номер</div><div style="float: right; width: 60%;"><input type="text" size=39 id="EqNum" onchange="EqNum_change()"></div><div class="clear">
+					<div style="float: left; width: 40%;">Код оборудования</div><div style="float: right; width: 60%;"><input type="text" size=39 id="EqCode" onchange="EqCode_change()"></div><div class="clear">
+					</section>
+				</div>
+				<div class="tab">
+					<input type="radio" id="tabA3" name="tab-group2">
+					<label for="tabA3" ><img src="img/icons8-рабочий-80.png" height="12" style="filter: invert(var(--invert-image));"/> Рабочий</label> 
+					<section class="content">
+					<div style="float: left; width: 33%;">Разряд работы</div><div style="float: right; width: 67%;"><input type="number" style="width: 227px" size=30 id="Razr" onchange="Razr_change()"></div><div class="clear">
+					<div style="float: left; width: 33%;">Система оплаты</div><div style="float: right; width: 67%;">
+						<select id="Oplata" onchange="Oplata_change()" style="width: 235px;">
+							<option value="10" selected>10 сдельная</option>
+							<option value="11">11 сдельная прямая</option>
+							<option value="12">12 сдельная премиальная</option>
+							<option value="13">13 сдельная прогрессивная</option>
+							<option value="20">20 повременная</option>
+							<option value="21">21 повременная простая</option>
+							<option value="21">22 повременная премиальная</option>
+						</select>
+					</div><div class="clear">
+					<div style="float: left; width: 33%;">Вид нормы</div><div style="float: right; width: 67%;">
+						<select id="Norm" onchange="Norm_change()" style="width: 235px;">
+							<option value="Р" selected>Р аналитически-расчетная</option>
+							<option value="И" >И аналитически-исследовательская</option>
+							<option value="Х" >Х хронометражная</option>
+							<option value="О">О опытно-статистическая</option>
+						</select>
+					</div><div class="clear">
+					<div style="float: left; width: 33%;">Степень механизации</div><div style="float: right; width: 67%;">
+						<select id="SM" onchange="SM_change()" style="width: 235px;">
+							<option value="1" >1 работа на автоматах</option>
+							<option value="2" selected>2 работа при помощи машин и механизмов</option>
+							<option value="3" >3 работа вручную при машинах и механизмах</option>
+							<option value="4" >4 работа вручную без машин и механизмов</option>
+							<option value="5" >5 работа вручную при наладке машин и механизмов</option>
+						</select>
+					</div><div class="clear">
+					<div style="float: left; width: 33%;">Условия труда</div><div style="float: right; width: 67%;">
+						<select  id="UT" onchange="UT_change()" style="width: 235px;">
+							<option value="1" selected>1 нормальные</option>
+							<option value="2" >2 тяжелые и вредные</option>
+							<option value="3" >3 особо тяжелые и особо вредные</option>
+						</select>
+					</div><div class="clear">
+					<div style="float: left; width: 33%;">Количество рабочих</div><div style="float: right; width: 67%;"><input type="number" style="width: 227px"size=30 id="KR" onchange="KR_change()"></div><div class="clear" >
+					<div style="float: left; width: 33%;">Код профессии</div><div style="float: right; width: 67%;"><input type="text" size=30 id="KP" onchange="KP_change()"></div><div class="clear">
+					<button style="float: left; width: 33%;text-align: left;"id="Profbut" onclick="Prof_dbl()">Профессия</button><div style="float: right; width: 67%;" ><input type="text" size=30 id="Prof" onchange="Prof_change()" ondblclick="Prof_dbl()" style="background-color: var(--color-c2)"></div><div class="clear">
+				</section>
+				</div>
+				<div class="tab">
+					<input type="radio" id="tabA4" name="tab-group2">
+					<label for="tabA4" ><img src="img/icons8-таймер-80.png" height="12" style="filter: invert(var(--invert-image));"/> Нормирование</label> 
+					<section class="content">
+						<table width="100%" cellspacing="0" cellpadding="1">
+						<tr>
+						<td align="left" width="10">ЕН</td>
+						<td align="left" width="10">ОП</td>
+						<td align="left" width="10">Кшт.</td>
+						<td align="left" width="10">%Отдых</td>
+						<td align="left" width="10"></td>
+						</tr>
+						<tr> 
+						<td><input type="number" value="1" id="EN"  onchange="EN_change()" style="width: 90px" title="Единица нормирования, на которую установлена норма расхода материала или времени"></td>
+						<td><input type="number" id="Party" onchange="Party_change()" value="1" style="width: 90px" title="Объем производственной партии в штуках"></td>
+						<td><select id="Kst"  onchange="Kst_change()" title="Коэффициент штучного времени при многостаночном обслуживании">
+							<option value="1" selected>1 станок k=1.0</option>
+							<option value="0,65">2 станка k=0.65</option>
+							<option value="0,48">3 станка k=0.48</option>
+							<option value="0,39">4 станка k=0.39</option>
+							<option value="0,35">5 станков k=0.35</option>
+							<option value="0,32">6 станков k=0.32</option>
+						</select>
+						</td>
+						<td><input type="number" id="Aotl" onchange="Aotl_change()" value="4" style="width: 70px" title="Процент времени на отдых и личные надобности"></td>
+						<td><button id="SumBut" onclick="SumBut_change()" title="Расчет времени" style="width: 80px">Tsum</button></td>
+						</tr>
+						<tr>
+						<td align="left" width="10">To</td>
+						<td align="left" width="10">Тв</td>
+						<td align="left" width="10"><button id="Tpz_but">Тпз</button></td>
+						<td align="left" width="10">Тшт</td>
+						<td align="left" width="10">Тштк</td>
+						</tr>
+						<tr> 
+						<td><input type="number" id="To" onchange="To_change()" style="width: 90px" title="Норма основного времени на операцию"></td>
+						<td><input type="number" id="Tv"  onchange="Tv_change()" style="width: 90px" title="Норма вспомогательного времени на операцию"></td>
+						<td><input type="number" id="Tpz" onchange="Tpz_change()" style="width: 90px" title="Норма подготовительно-заключительного времени на операцию"></td>
+						<td><input type="number" id="Tst" onchange="Tst_change()" style="width: 70px" title="Норма штучного времени на операцию"></td>
+						<td><input type="number" id="Tstk"  onchange="Tstk_change()" style="width: 70px" title="Норма штучно-калькуляционного времени"></td>
+						</tr>
+						</table>
+					</section>
+				</div>
+				<div class="tab">
+					<input type="radio" id="tabA5" name="tab-group2">
+					<label for="tabA5" ><img src="img/sketch.png" height="12" style="filter: invert(var(--invert-image));"/> Эскизы</label> 
+					<section class="content">
+						<button id="L1" title='предыдущий' style="padding: 1px 1px;">◄</button>
+						<input id="M1" type='text' size=1 value='0' title='лист' style="width: 10px;"> 
+						<a>из </a>
+						<input id="N1" type='text' size=1 value='0' title='листов' style="width: 10px;"> 
+						<button id="R1"  title='следующий' style="padding: 1px 1px;">►</button> 
+						<button  title="Удалить" onclick="Sketch_del()"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAARFQTFRFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA////aOGfXgAAAFl0Uk5TAAFHufDtsTlLw/m+Sk7i+NtS5ONPqEZI4eX9oERJtVCfFRmq/pUPG6+uRbuptPNN+vLn6fu3uB38vLLgs4uCEALrBJOnGFGUmRyrtuqsurDePUy9v0Hv7jsLP0j8AAAAAWJLR0RaA7ulogAAAAlwSFlzAAAMUwAADFMBP1PxegAAAZFJREFUOMt9k/9fwUAYx59J0jLaTEYYSiRsK5GlQlRKSF+f//8f6XZmd77Ufvvc+313n3s9rwEACL4t/3ZgB7gvuCuKeyHBTVIYIxHcDzEuK85KVJ0nVcHYQTyAWtDjieRhKp1BRXd5NgeQP8Kwa+iJ48IJQLGECjkjHaacGvMzVIVyYpyiVoYzrOTmG11DWnBiZLAKNTG9uNoxQgbjAIZZA0v0ujnG+UWScZDrFlxio8kbVxxvttCG1DW2OePm9o7xNmopco/CG50OzxWDNlky1vkfBsedp68ZS3yDscKJ0cVsj8VeFrsSrAj3rD90CisCqdkf8AuDPp3kn5wYMc7YwOeG/g+nRuJhnffYWwYVTMgAZY3n+cenIQsVDPvIuNt5tukZMVBkho0vYJkqz0cj3jBMC2p1meOKRCoxQzX90MCGm/OvhNPSC6M4xgnENbSHHOeMoo3TNzpJx/C4ZxAenbmzbsnBqsepMdaNBkbdiZOf1xQxyo3P0NA0cTpzo+B7j5gfaYEJwufk67v046z8Ani9Uy5EHT/4AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE5LTA1LTAzVDA5OjI0OjQ5KzAxOjAwvCwbWAAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxOS0wNS0wM1QwOToyNDo0OSswMTowMM1xo+QAAABGdEVYdHNvZnR3YXJlAEltYWdlTWFnaWNrIDYuNy44LTkgMjAxOS0wMi0wMSBRMTYgaHR0cDovL3d3dy5pbWFnZW1hZ2ljay5vcmdBe+LIAAAAGHRFWHRUaHVtYjo6RG9jdW1lbnQ6OlBhZ2VzADGn/7svAAAAGHRFWHRUaHVtYjo6SW1hZ2U6OmhlaWdodAA1MTLA0FBRAAAAF3RFWHRUaHVtYjo6SW1hZ2U6OldpZHRoADUxMhx8A9wAAAAZdEVYdFRodW1iOjpNaW1ldHlwZQBpbWFnZS9wbmc/slZOAAAAF3RFWHRUaHVtYjo6TVRpbWUAMTU1Njg3MTg4OUlrIvQAAAATdEVYdFRodW1iOjpTaXplADEzLjVLQkIjJ0glAAAARnRFWHRUaHVtYjo6VVJJAGZpbGU6Ly8uL3VwbG9hZHMvNTYvVG1laG9hSi8xOTE5L2JpZ2NhbmNlbHN5bWJvbF8xMjE5NjQucG5nkRY+2AAAAABJRU5ErkJggg==" height="12" style="filter: invert(var(--invert-image));"/></button> 
+						<button id="NW1"  title='открыть в новом окне'><img src="img/icons8-открыть-в-окне-32.png" height="12" style="filter: invert(var(--invert-image));"/></button>
+						<select id="A3" style="width: 40px;">
+							<option value="A4" selected>A4</option>
+							<option value="A3">A3</option>
+						</select>
+						<input type="file" id="SketchLoader">
+						<img id="SketchImage" src="img/eskiz.png" width="420"  align="top" title="Выберите файл для вставки формата png, jpg или bmp A4 (285x148) A3 (394x248)" style="background-color:var(--color-secondary);filter: invert(var(--invert-image));">
+						<canvas id="SketchCanvas" width="1980" height="1020" style=" pointer-events: none;background-color:var(--color-secondary);filter: invert(var(--invert-image));"></canvas>
+						<!--<div class="clear"></div>-->
+					</section> 
+					</section> 
+				</div>    				
+			</div> 
+			<div id="O_tab" class="tabs">
+				<div class="tab">
+					<input type="radio" id="tabO1" name="tab-group3" checked>
+					<label for="tabO1" >Текст перехода</label> 
+					<section class="content">
+					<div> 
+						<span class="formula"><button id="b1" type="button1" style="display: none">A<span><sup>a</sup></span></button> 
+						<button id="b2" type="button2" style="display: none">A<span><sub>b</sub></span></button> 
+						<button id="b3" type="button3" style="display: none">A<span><sup>a</sup><sub>b</sub></span></button>
+						<button id="b4" type="button4" style="display: none"><b>B</b></button>
+						<button id="bup" title='открыть эскиз в окне'><img src="img/icons8-открыть-в-окне-32.png" height="12" style="filter: invert(var(--invert-image));"/></button>
+						<button id="b5" type="button5" onclick="Button5_click()" title="Вставить спецсимвол">Ω</button >
+						</span>
+						<select id="sym"> 
+							<option value="ø" selected>ø</option>
+							<option value="°">°</option>
+							<option value="±">±</option>
+							<option value="∠">∠</option>
+							<option value="□">□</option>
+							<option value="►">►</option>
+							<option value="×">×</option>
+							<option value="∙">∙</option>
+							<option value="α">α</option>
+							<option value="β">β</option>
+							<option value="γ">γ</option>
+							<option value="δ">δ</option>
+							<option value="ε">ε</option>
+							<option value="ζ">ζ</option>
+							<option value="η">η</option>
+							<option value="θ">θ</option>
+							<option value="ι">ι</option>
+							<option value="κ">κ</option>
+							<option value="λ">λ</option>
+							<option value="μ">μ</option>
+							<option value="ν">ν</option>
+							<option value="ξ">ξ</option>
+							<option value="ο">ο</option>
+							<option value="π">π</option>
+							<option value="ρ">ρ</option>
+							<option value="ς">ς</option>
+							<option value="σ">σ</option>
+							<option value="τ">τ</option>
+							<option value="υ">υ</option>
+							<option value="φ">φ</option>
+							<option value="χ">χ</option>
+							<option value="ω">ω</option>
+							<option value="ϑ">ϑ</option>
+							<option value="ϒ">ϒ</option>
+						</select>
+						<button id="b7" type="button7" onclick="Button7_click()" title="Допуск">IT</button >
+						<button id="b8" type="button8" onclick="Button8_click()" title="Шероховатость">Ra</button >
+						<button id="b9" type="button9" onclick="Button9_click()" title="Резьба">M</button >
+					</div> 		
+					<textarea placeholder="Содержание перехода" rows="4" cols="64" id="PerContent"  onchange="PerContent_change()" style="position: relative; " ></textarea>
+					<div class="clear">
+					<!--Вид операции <select id="Vmo"  onchange="Vmo_change()" >
+							<option value="0"selected></option>
+							<option value="1">Точение</option>
+							<option value="2">Фрезерование</option>
+							<option value="3">Сверление</option>
+							<option value="4">Контроль</option>
+						</select>-->
+					<table width="100%" cellspacing="0" cellpadding="1">
+						<tr>
+						<td align="center" width="9">To</td>
+						<td align="center" width="9">Тв</td>
+						<td align="center" width="9">Тхх</td>
+						<td align="center" width="9">Тсм</td>
+						</tr>
+						<tr> 
+						<td><input type="number" id="Top" onchange="Top_change()" style="width: 90px" title="Норма основного времени на переход"></td>
+						<td><input type="number" id="Tvp" onchange="Tvp_change()" style="width: 90px" title="Норма вспомогательного времени на переход"></td>
+						<td><input type="number" id="Thh" onchange="Thh_change()" style="width: 90px" title="Норма времени холостых ходов"></td>
+						<td><input type="number" id="Tsm" onchange="Tsm_change()" style="width: 90px" title="Норма времени смены инструмента"></td>
+						<td><button id="ETo" title="Расчет основного времени">ƩTo</button></td>
+						</tr>
+						<tr>
+						<td align="center" width="9">%контроля</td>
+						<td align="center" width="9">РО</td>
+						<td align="center" width="9">Синхрон</td>
+						<td align="center" width="9">ПИ</td>
+						<td align="center" width="9">Шпинд.</td>
+						</tr>
+						<tr> 
+						<td><input type="number" id="PK" onchange="PK_change()" style="width: 90px"  title="Процент контроля"></td>
+						<td><select id="RO" onchange="RO_change()" style="width: 90px" title="Рабочий орган">
+							<!--<option value="0">0</option>!-->
+							<option selected value="1" >1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+						</td>
+						<td><select id="Ksnh" onchange="Ksnh_change()" style="width: 90px" title="Код синхронизации">
+							<option selected value="0" ></option>
+							<option value="1-2" >1-2</option>
+							<option value="1-3">1-3</option>
+							<option value="2-3">2-3</option>
+							<option value="1-2-3">1-2-3</option>
+						</td>
+						<td><input type="number" id="Pin" onchange="Pin_change()" min="1" max="250" step="1" size="3" 
+						style="width: 90px; " title="Номер позиции инструментальной наладки"></td>
+						<td><select id="SPD" onchange="SPD_change()"  title="Шпиндель Основной/Вспомогательный">
+							<option value="1" selected>Main</option>
+							<option value="2">Sub</option>
+						</select>
+						</td>
+						</tr>
+						</table>
+						<table width="100%" cellspacing="0" cellpadding="1">
+						<tr>
+						<td align="center" width="10">D</td>
+						<td align="center" width="10">Dmin</td>
+						<td align="center" width="10">L</td>
+						<td align="center" width="10">t</td>
+						<td align="center" width="10">i</td>
+						<td align="center" width="10">z</td>
+						</tr>
+						<tr> 
+						<td><input type="number" id="D1"  onchange="D1_change()" style="width: 80px" title="Расчетный размер диаметра обрабатываемой детали"></td>
+						<td><input type="number" id="D2"  onchange="D2_change()" style="width: 80px" title="Минимальный диаметр обработки"></td>
+						<td><input type="number" id="L"  onchange="L_change()" style="width: 80px" title="Расчетный размер длины рабочего хода"></td>
+						<td><input type="number" id="t" onchange="t_change()" style="width: 60px" title="Глубина резания"></td>
+						<td><input type="number" id="i" onchange="i_change()" style="width: 60px" title="Количество проходов"></td>
+						<td><input type="number" id="z"  onchange="z_change()" style="width: 60px" title="Количество пластин на инструменте"></td>
+						</tr>
+						<tr>
+						<td align="center" width="10">Sz</td>
+						<td align="center" width="10">So</td>
+						<td align="center" width="10">Sm</td>
+						<td align="center" width="10">n</td>
+						<td align="center" width="10">V</td>
+						<td align="center" width="10">ae</td>
+						</tr>
+						<tr> 
+						<td><input type="number" id="Sz" class="raz" onchange="Sz_change()" style="width: 80px" title="Подача, мм/зуб"></td>
+						<td><input type="number" id="So" class="raz" onchange="So_change()" style="width: 80px" title="Подача, мм/об"></td>
+						<td><input type="number" id="Sm" class="raz" onchange="Sm_change()" style="width: 80px" title="Подача, мм/мин"></td>
+						<td><input type="number" id="n" class="raz" onchange="n_change()" style="width: 60px" title="Число оборотов шпинделя, об/мин"></td>
+						<td><input type="number" id="V" class="raz" onchange="V_change()" style="width: 60px" title="Скорость резания, м/мин"></td>
+						<td><input type="number" id="ae" class="raz" onchange="ae_change()" style="width: 60px" title="Ширина обработки"></td>
+						</tr>
+						</table>
+					</section>
+				</div> 
+				<div class="tab">
+					<input type="radio" id="tabO2" name="tab-group3" >
+					<label for="tabO2" >Наладка</label> 
+					<section class="content">
+					<!--<img id="NImage" width="300" height="300" align="top" style="background-color:#ffffff;position:absolute; top: 50px;left: 230px"></IMG>!-->
+					<canvas id="NCanvas" width="240" height="300" title="71.5x90"style="filter: invert(var(--invert-image));border: 1px solid #000000; position: absolute; top: 50px;left: 290px"></canvas>
+					<table width="100%" cellspacing="0" cellpadding="1">
+					<tr> 
+					<td style="width: 210px;">инструмент в наладке</td>
+					<td><button  title="Удалить" onclick="Naladka_del()"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAARFQTFRFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA////aOGfXgAAAFl0Uk5TAAFHufDtsTlLw/m+Sk7i+NtS5ONPqEZI4eX9oERJtVCfFRmq/pUPG6+uRbuptPNN+vLn6fu3uB38vLLgs4uCEALrBJOnGFGUmRyrtuqsurDePUy9v0Hv7jsLP0j8AAAAAWJLR0RaA7ulogAAAAlwSFlzAAAMUwAADFMBP1PxegAAAZFJREFUOMt9k/9fwUAYx59J0jLaTEYYSiRsK5GlQlRKSF+f//8f6XZmd77Ufvvc+313n3s9rwEACL4t/3ZgB7gvuCuKeyHBTVIYIxHcDzEuK85KVJ0nVcHYQTyAWtDjieRhKp1BRXd5NgeQP8Kwa+iJ48IJQLGECjkjHaacGvMzVIVyYpyiVoYzrOTmG11DWnBiZLAKNTG9uNoxQgbjAIZZA0v0ujnG+UWScZDrFlxio8kbVxxvttCG1DW2OePm9o7xNmopco/CG50OzxWDNlky1vkfBsedp68ZS3yDscKJ0cVsj8VeFrsSrAj3rD90CisCqdkf8AuDPp3kn5wYMc7YwOeG/g+nRuJhnffYWwYVTMgAZY3n+cenIQsVDPvIuNt5tukZMVBkho0vYJkqz0cj3jBMC2p1meOKRCoxQzX90MCGm/OvhNPSC6M4xgnENbSHHOeMoo3TNzpJx/C4ZxAenbmzbsnBqsepMdaNBkbdiZOf1xQxyo3P0NA0cTpzo+B7j5gfaYEJwufk67v046z8Ani9Uy5EHT/4AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE5LTA1LTAzVDA5OjI0OjQ5KzAxOjAwvCwbWAAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxOS0wNS0wM1QwOToyNDo0OSswMTowMM1xo+QAAABGdEVYdHNvZnR3YXJlAEltYWdlTWFnaWNrIDYuNy44LTkgMjAxOS0wMi0wMSBRMTYgaHR0cDovL3d3dy5pbWFnZW1hZ2ljay5vcmdBe+LIAAAAGHRFWHRUaHVtYjo6RG9jdW1lbnQ6OlBhZ2VzADGn/7svAAAAGHRFWHRUaHVtYjo6SW1hZ2U6OmhlaWdodAA1MTLA0FBRAAAAF3RFWHRUaHVtYjo6SW1hZ2U6OldpZHRoADUxMhx8A9wAAAAZdEVYdFRodW1iOjpNaW1ldHlwZQBpbWFnZS9wbmc/slZOAAAAF3RFWHRUaHVtYjo6TVRpbWUAMTU1Njg3MTg4OUlrIvQAAAATdEVYdFRodW1iOjpTaXplADEzLjVLQkIjJ0glAAAARnRFWHRUaHVtYjo6VVJJAGZpbGU6Ly8uL3VwbG9hZHMvNTYvVG1laG9hSi8xOTE5L2JpZ2NhbmNlbHN5bWJvbF8xMjE5NjQucG5nkRY+2AAAAABJRU5ErkJggg==" height="12" style="filter: invert(var(--invert-image));"/></button> 
+					<input type="file" id="NimageLoader">
+					</td>
+					</tr>
+					</table>
+					<br>
+					<div>
+					<select id="PIT1" name="PIT" style="width: 260px;"  >
+						<option value=""></option>
+					</select>
+					</div>	
+					<div>
+					<select id="PIT2" name="PIT" style="width: 260px;"  >
+						<option value=""></option>
+					</select>
+					</div>
+					<div>
+					<select id="PIT3" name="PIT" style="width: 260px;"  >
+						<option value=""></option>
+					</select>
+					</div>
+					<div>
+					<select id="PIT4" name="PIT" style="width: 260px;"  >
+						<option value=""></option>
+					</select>
+					</div>	
+					<div>
+					<select id="PIT5" name="PIT" style="width: 260px;"  >
+						<option value=""></option>
+					</select>
+					</div>
+					<div>
+					<select id="PIT6" name="PIT" style="width: 260px;"  >
+						<option value=""></option>
+					</select>
+					</div>
+					<div>
+					<select id="PIT7" name="PIT" style="width: 260px;"  >
+						<option value=""></option>
+					</select>
+					</div>	
+					<div>
+					<select id="PIT8" name="PIT" style="width: 260px;"  >
+						<option value=""></option>
+					</select>
+					</div>
+					<br>					
+					<div>
+					L=<input type="number" id="Ln" style="width: 80px" title="вылет инструмента">
+					</div>	
+					</section>
+				</div> 					
+			</div> 
+			<div id="T_tab" class="tabs">
+				<div class="tab">
+					<input type="radio" id="tab101" name="tab-group4"  checked>
+					<label for="tab101" > РИО</label> 
+					<section class="content">
+					<table width="100%" cellspacing="0" cellpadding="1">
+						<tr>
+						<td align="left" width="8">Вид</td>
+						<td align="left" width="15">Изготовитель/ГОСТ</td>
+						<td align="left" width="10">Код</td>
+						<td align="left" width="5">Кол-во</td>
+						<td align="left" width="3">Вст</td>
+						<td align="left" width="3">Сим</td>
+						</tr>
+						<tr> 
+						<td>
+							<!--<input type="text" id="VidT" maxlength="20" size="5" onchange="VidT_change()" >!-->
+							<select id="VidT" onchange="VidT_change()" title="Вид оснастки"> 
+								<option value="СЗ" title="Средства защиты">СЗ</option><!--Средства защиты-->
+								<option value="ПР" title="Приспособления">ПР</option><!--Приспособления -->
+								<option value="ВИ" title="Вспомогательный инструмент">ВИ</option><!-- Вспомогательный инструмент-->
+								<option value="РИ" title="Режущий инструмент">РИ</option><!-- Режущий инструмент-->
+								<option value="СЛ" title="Слесарно-монтажный инструмент">СЛ</option><!-- Слесарно-монтажный инструмент-->
+								<option value="СИ" title="Средства измерения">СИ</option><!-- Средства измерения-->
+								<option value="ВМ" title="Вспомогательные материалы">ВМ</option><!-- Вспомогательные материалы-->		
+							</select>
+						</td>
+						<td><input type="text" id="FirmT" style="width: 175px;" maxlength="20" size="10" onchange="FirmT_change()"  title="Производитель оснастки"></td>
+						<td><input type="text" id="KodT" style="width: 130px;" maxlength="10" size="8" onchange="KodT_change()"  title="Код заказа оснастки"></td>
+						<td><input style="width: 50px;" type="number" id="NumT" maxlength="3" size="3" value="1" onchange="NumT_change()"  title="Количество инструмента на одну позицию"></td>
+						<td><button id="b6" type="button6" onclick="Button6_click()" title="Вставить спецсимвол">Ω</button ></td>
+						<td><select id="sym2"> 
+							<option selected value="ø">ø</option>
+							<option value="°">°</option>
+							<option value="±">±</option>
+						</select></td>
+						</tr>
+					</table>
+					<table width="100%" cellspacing="0" cellpadding="1">
+						<tr>
+						<td align="left" width="7">Наименование</td>
+						<td><input type="text" id="NameT" maxlength="54" size="51" onchange="NameT_change()"  title="Наименование оснастки"></td>
+						</tr>
+						<tr>
+						<td align="left" width="7"><button id="ObozTbut" onclick="ObozT_dbl()">Обозначение</button></td>
+						<td><input type="text" id="ObozT" maxlength="54" size="51" onchange="ObozT_change()" ondblclick="ObozT_dbl()" style="background-color: var(--color-c2)" title="Обозначение оснастки" src=""></td>
+						</tr>
+						<img id="ToolImg" width="300" style="opacity:0.9;position:absolute; left:150px; top: 0px;z-index:4;display:none;filter: invert(var(--invert-image));"/>
+					</table>
+					<table width="100%" cellspacing="0" cellpadding="1">
+						<tr>
+						<td align="left" width="9">МРЧ</td>
+						<td align="left" width="9">К-во пласт.</td>
+						<td align="left" width="9">К-во кромок</td>
+						<td align="left" width="9">Стойкость</td>
+						<td align="left" width="9">Вылет</td>
+						<td align="left" width="9">Диаметр</td>
+						</tr>
+						<tr> 
+						<td><input type="text" id="MRCT" maxlength="20" size="6" onchange="MRCT_change()"  title="Материал режущей части"></td>
+						<td><input type="number" id="KPT" style="width: 70px" maxlength="20" size="6" onchange="KPT_change()"  title="Количество пластин на инструменте"></td>
+						<td><input type="number" id="KKT" style="width: 70px"maxlength="20" size="7" onchange="KKT_change()"  title="Количество режущих кромок на инструменте"></td>
+						<td><input type="number" id="StoiT" style="width: 70px"maxlength="20" size="7" onchange="StoiT_change()"  title="Стойкость одной режущей кромки, минут"></td>
+						<td><input type="number" id="VylT" style="width: 70px"maxlength="20" size="7" onchange="VylT_change()"  title="Вылет режущей части инструмента из оправки или цанги"></td>
+						<td><input type="number" id="DiaT" style="width: 70px"maxlength="20" size="7" onchange="DiaT_change()" title="Диаметр инструмента" ></td>
+						</tr>
+					</table>
+					<td align="left" width="7"><button id="CallTurl" onclick="URLT_dbl()"> URL <img src="data:image/png;base64,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" height="12"/></button></td><div style="float: right; width: 80%;"><input type="url" id="TURL" size="51" placeholder="http://www.example.com" onchange="TURL_change()"></input></div>
+					<div style="float: left; width: 20%;">Примечание</div><div style="float: right; width: 80%;"><textarea rows="5" cols="50" id="TNote" onchange="TNote_change()"></textarea></div>
+					</section>
+				</div> 						
+			</div> 
+		</div> 
+        </div>		 
+		<div id="clear">
+		</div>				   
+		<div id="footer">
+			
+		</div>
+    </div>
+
+    <!--<script
+		src="https://code.jquery.com/jquery-3.4.1.min.js"
+		integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+		crossorigin="anonymous">
+	</script>-->
+	<script src="js/vendor/jquery.min.js" type="text/javascript"></script>
+	<script src="js/vendor/jquery-ui.min.js" type="text/javascript"></script>
+	<!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>-->
+    <script src="js/vendor/jstree.min.js" type="text/javascript"></script>
+    <script src="js/modules/main.js" type="text/javascript"></script>
+	
+</body>
+</html>
